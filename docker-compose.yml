@@ -4,7 +4,8 @@ services:
   frontend:
     image: leejjo2/docker-frontend
     build:
-      dockerfile: Dockerfile.dev
+#      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: ./frontend
     volumes:
       - /app/node_modules
