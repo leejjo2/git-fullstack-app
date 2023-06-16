@@ -1,6 +1,8 @@
-version: "3"
+#version: "3"
+version: "2.4"
 services:
   frontend:
+    image: leejjo2/docker-frontend
     build:
       dockerfile: Dockerfile.dev
       context: ./frontend
@@ -8,16 +10,23 @@ services:
       - /app/node_modules
       - ./frontend:/app
     stdin_open: true
+    mem_limit: 128m
 
   nginx:
     restart: always
+    image: leejjo2/docker-nginx
     build:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - "3000:80"
+      - "80:80"
+    mem_limit: 128m
+    links:
+      - frontend
+      - backend
 
   backend:
+    image: leejjo2/docker-backend
     build:
       dockerfile: Dockerfile.dev
       context: ./backend
@@ -26,12 +35,14 @@ services:
       - /app/node_modules
       - ./backend:/app
     environment:
-      MYSQL_HOST: mysql
+      MYSQL_HOST: docker-fullstack-mysql-1.cwzeazorzzzq.ap-northeast-2.rds.amazonaws.com
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: james777
       MYSQL_DATABASE: myapp
       MYSQL_PORT: 3306
+    mem_limit: 128m
 
+# local test 용도
 #  mysql:
 #    build: ./mysql
 #    restart: unless-stopped
